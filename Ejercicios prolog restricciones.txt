@@ -1,0 +1,92 @@
+:-use_module(library(clpfd)).
+
+d(1).
+d(2).
+d(3).
+d(4).
+d(5).
+d(6).
+d(7).
+
+solucion(L):-
+    % C son los profesores de tiempo completo, M son los profesores de medio tiempo
+    
+    d(C1), d(C2), d(C3), d(C4), d(C5), d(M1), d(M2), d(M3), d(M4), d(M5),
+    C1#\= C2, C1#\= C3, C1#\= C4, C1#\= C5, C1#\= M1, C1#\= M2, C1#\= M3, C1#\= M4,C1#\= M5,
+    C2#\= C1, C2#\= C3, C2#\= C4, C2#\= C5, C2#\= M1, C2#\= M2, C2#\= M3, C2#\= M4, C2#\= M5, 
+    C3#\= C1, C3#\= C2, C3#\= C4, C3#\= C5, C3#\= M1, C3#\= M2, C3#\= M3, C3#\= M4, C3#\= M5, 
+    
+    L=[C1, C2, C3, C4, C5, M1, M2, M3, M4, M5],
+    write('Profesor 1 tiempo completo en oficina: '), write(C1), nl,
+    write('Profesor 2 tiempo completo en oficina: '), write(C2), nl,
+    write('Profesor 3 tiempo completo en oficina: '), write(C3), nl,
+    write('Profesor 4 tiempo completo en oficina: '), write(C4), nl,
+    write('Profesor 5 tiempo completo en oficina: '), write(C5), nl,
+    
+    write('Profesor 1 medio tiempo en oficina: '), write(M1), nl,
+    write('Profesor 2 medio tiempo en oficina: '), write(M2), nl,
+    write('Profesor 3 medio tiempo en oficina: '), write(M3), nl,
+    write('Profesor 4 medio tiempo en oficina: '), write(M4), nl,
+    write('Profesor 5 medio tiempo en oficina: '), write(M5).
+
+
+
+%--------- Ejercicio 2
+
+:-use_module(library(clpfd)).
+
+pared(1).
+pared(2).
+pared(3).
+pared(4).
+
+ordenar(L):-
+    % Tendremos un sistema de referencia. La pared 1 está frente a la pared 2 y 
+    % la pared 3 está frente a la pared 4
+    % V = ventana,P= puerta, M= mesa de estudio, A= armario, C= cama, CU=cuadro, MN= mesa de noche
+    
+    pared(V), pared(M), pared(C),pared(P), pared(A),  pared(CU), pared(MN),
+    V#\= M, (( V#= 1, P#= 2); ( V#=2, P#= 1); ( V#= 3, P#= 4); ( V#= 4, P#= 3)),
+    CU#\= A, C#= MN, A#\= C, A#\= MN, A#\= P,
+    (( ( V#= 1; V#= 2), ( C#= 3; C#= 4) );  ( ( V#= 4; V#= 3), ( C#= 1; C#= 2) )),
+    
+    
+    L=[V, M, C, P, A, CU, MN],
+    write('Ventana en la pared #: '), write(V), nl,
+    write('Mesa de estudio en la pared #: '), write(M), nl,
+    write('Cama en la pared #: '), write(C), nl,
+    write('Puerta en la pared #: '), write(P), nl,
+    write('Armario en la pared #: '), write(A), nl,
+    write('Cuadro en la pared #: '), write(CU), nl,
+    write('Mesa de noche en la pared #: '), write(MN).
+
+
+
+
+
+
+% -------------------- ejercicio 3
+:-use_module(library(clpfd)).
+
+%valor(tarea1, 2). valor en tiempo de las tareas
+%valor(tarea2, 3).
+%valor(tarea3, 2).
+%valor(tarea4, 10).
+%valor(tarea5, 15).
+%
+orden(1).
+orden(2).
+orden(3).
+orden(4).
+orden(5).
+
+
+ordenar(L):-
+    
+    orden(tarea1), orden(tarea2), orden(tarea3),orden(tarea4), orden(tarea5),  
+    tarea1#< tarea2, tarea5#> tarea1, tarea5#> tarea2, tarea5#> tarea3, tarea5#> tarea4,
+    tarea2#> tarea1, tarea3#> tarea2, tarea3#> tarea1,tarea4#> tarea3,  tarea4#> tarea2, 
+    tarea4#> tarea1,    
+    
+    
+    L=[tarea1, tarea2, tarea3, tarea4, tarea5].

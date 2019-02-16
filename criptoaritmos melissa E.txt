@@ -1,0 +1,54 @@
+
+
+% EJERCICIO # 1
+
+
+:- use_module(library(clpfd)).
+%
+% [D,O,S,T,R,E]
+digito(0).
+digito(1).
+digito(2).
+digito(3).
+digito(4).
+digito(5).
+digito(6).
+digito(7).
+digito(8).
+digito(9).
+diferente([]).
+diferente([X|Y]):-
+    not(member(X,Y)),diferente(Y).
+solucion(L):-
+    digito(S),S#>0,digito(D),digito(O),digito(R),digito(T),T#>0,
+    digito(E),
+    100*D+10*O+S+ 1000*T+100*R+10*E+S #= 10000*S+1000*I+100*E+10*T+E,
+    L=[D,O,S,T,R,E],diferente(L).
+
+
+
+
+% EJERCICIO # 2
+
+:- use_module(library(clpfd)).
+%
+% [O,C,H,D,I,E,S]
+digito(0).
+digito(1).
+digito(2).
+digito(3).
+digito(4).
+digito(5).
+digito(6).
+digito(7).
+digito(8).
+digito(9).
+diferente([]).
+diferente([X|Y]):-
+    not(member(X,Y)),diferente(Y).
+solucion(L):-
+    digito(O),O#>0,digito(C),digito(H),digito(D),digito(I),
+    digito(E),digito(S),
+    1000*O+100*C+H*10+ O+ 1000*O+100*C+H*10+ O #= 10000000*D+10000000*I+1000000*E+100000*C+ 10000*I+1000*S
+    +100*E +10*I +S,
+    L=[O,C,H,D,I,E,S],diferente(L).

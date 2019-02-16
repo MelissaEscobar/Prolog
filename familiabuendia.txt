@@ -1,0 +1,158 @@
+hombre('jose_arcadio_buendia_padre').
+hombre('jose_arcadio_hijo').
+hombre('coronel_aureliano').
+hombre('aureliano_jose').
+hombre('arcadio').
+hombre('aureliano17').
+hombre('jose_arcadio_segundo').
+hombre('aureliano_segundo').
+hombre('jose_arcadio_hijo').
+hombre('aureliano_babilonia').
+hombre('mauricio_babilonia').
+hombre('aureliano_rodrigo').
+hombre('jose_arcadio_carpio').
+hombre('gaston').
+
+
+mujer('amaranta').
+mujer('rebeca').
+mujer('renata_remedios_meme').
+mujer('amaranta_ursula').
+mujer('remedios_la_bella').
+mujer('remedios_moscote').
+mujer('ursula_iguaran').
+mujer('pilar_ternera').
+mujer('santa_sofia_de_la_piedad').
+mujer('carmelita_montiel').
+mujer('petra_cotes').
+mujer('fernanda_del_carpio').
+
+
+ascendente('jose_arcadio_buendia_padre', 'rebeca').
+ascendente('jose_arcadio_buendia_padre', 'jose_arcadio_hijo').
+ascendente('jose_arcadio_buendia_padre', 'amaranta').
+ascendente('jose_arcadio_buendia_padre', 'coronel_aureliano').
+
+ascendente('ursula_iguaran', 'rebeca').
+ascendente('ursula_iguaran', 'jose_arcadio_hijo').
+ascendente('ursula_iguaran', 'amaranta').
+ascendente('ursula_iguaran', 'coronel_aureliano').
+
+ascendente('pilar_ternera', 'arcadio').
+ascendente('jose_arcadio_hijo', 'arcadio').
+
+ascendente('pilar_ternera', 'aureliano_jose').
+ascendente('coronel_aureliano', 'aureliano_jose').
+
+ascendente('coronel_aureliano', 'aureliano17'). 
+
+ascendente('santa_sofia_de_la_piedad', 'remedios_la_bella').
+ascendente('santa_sofia_de_la_piedad', 'aureliano_segundo').
+ascendente('santa_sofia_de_la_piedad', 'jose_arcadio_segundo').
+
+ascendente('arcadio', 'remedios_la_bella').
+ascendente('arcadio', 'aureliano_segundo').
+ascendente('arcadio', 'jose_arcadio_segundo').
+
+ascendente('fernanda_del_carpio', 'renata_remedios_meme').
+ascendente('fernanda_del_carpio', 'jose_arcadio_carpio').
+ascendente('fernanda_del_carpio', 'amaranta_ursula').
+
+ascendente('aureliano_segundo', 'renata_remedios_meme').
+ascendente('aureliano_segundo', 'jose_arcadio_carpio').
+ascendente('aureliano_segundo', 'amaranta_ursula').
+
+ascendente('renata_remedios_meme', 'aureliano_babilonia').
+ascendente('mauricio_babilonia', 'aureliano_babilonia').
+
+ascendente('amaranta_ursula', 'aureliano_rodrigo').
+ascendente('aureliano_babilonia', 'aureliano_rodrigo').
+
+
+esposos('ursula_iguaran', 'jose_arcadio_buendia_padre').
+esposos('jose_arcadio_buendia_padre', 'ursula iguaran').
+esposos('rebeca', 'jose_arcadio_hijo').
+esposos('jose_arcadio_hijo', 'rebeca').
+esposos('coronel_aureliano', 'remedios_moscote').
+esposos('remedios_moscote', 'coronel_aureliano').
+esposos('aureliano_segundo', 'fernanda_del_carpio').
+esposos('fernanda_del_carpio', 'aureliano_segundo').
+esposos('amaranta_ursula', 'gaston').
+esposos('gaston', 'amaranta_ursula').
+
+amantes('coronel_aureliano','pilar_ternera').
+amantes('pilar_ternera','coronel_aureliano').
+amantes('pilar_ternera','jose_arcadio_hijo').
+amantes('jose_arcadio_hijo','pilar_ternera').
+amantes('arcadio','santa_sofia_de_la_piedad').
+amantes('santa_sofia_de_la_piedad','arcadio'). 
+amantes('aureliano_jose','carmelita_montiel').
+amantes('carmelita_montiel','aureliano_jose').
+amantes('aureliano_segundo','petra_cotes').
+amantes('petra_cotes','aureliano_segundo').
+amantes('petra_cotes','jose_arcadio_segundo').
+amantes('jose_arcadio_segundo','petra_cotes').
+amantes('renata_remedios_meme','mauricio_babilonia').
+amantes('mauricio_babilonia','renata_remedios_meme').
+amantes('aureliano_babilonia','amaranta_ursula').
+amantes('amaranta_ursula','aureliano_babilonia').
+
+padre(X,Y):-
+    ascendente(X,Y), hombre(X).
+
+madre(X,Y):-
+    ascendente(X,Y), mujer(X).
+
+hijo(X,Y):-
+   ( padre(Y,X); madre(Y,X)), hombre(X).
+
+hija(X,Y):-
+   ( padre(Y,X); madre(Y,X)), mujer(X).
+
+hermano(X, Y):-
+    ascendente(P,Y), ascendente(P, X), hombre(X).
+
+hermana(X, Y):-
+    ascendente(P,Y), ascendente(P, X), mujer(X).
+
+ abuelo(X,Y):-
+     ascendente(P,Y), padre(X,P).
+
+abuela(X,Y):-
+     ascendente(P,Y), madre(X,P).
+
+tio(X,Y):-
+   ( padre(P,Y); madre(P,Y)) , hermano(X,P).
+
+tia(X,Y):-
+   ( padre(P,Y); madre(P,Y)) , hermana(X,P).
+
+
+sobrino(X,Y):-
+   (  tio(Y,X); tia(Y,X)), hombre(X).
+
+
+sobrina(X,Y):-
+   (  tio(Y,X); tia(Y,X)), mujer(X).
+
+
+suegro(X,Y):-
+   (  esposos(P,Y); amantes(P,Y)), padre(X, P).
+
+suegra(X,Y):-
+   (  esposos(P,Y); amantes(P,Y)), madre(X, P).
+
+cuñado(A,B):-
+   (   ( esposos(P,A); amantes(P,A)) , (  hermano(B,P);  hermana(B,P))  ) ; 
+    (   ( esposos(P,B); amantes(P,B)) , (  hermano(A,P);  hermana(A,P))  ).
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,304 @@
+% Ejercicios taller #3 listas
+
+%1
+
+contar([], 0).
+
+contar([A|B], C):-
+    contar(B, C1), C is C1+1.
+
+
+inv([],P):-
+P is 0.
+
+inv([D|E], P):-
+  contar([D|E], C), 2 is C, P=[E,D].
+
+
+
+inv([D|E], P):-
+  contar([D|E], C), not(2 is C), inv(E, E1) ,P=[E1,D].
+
+
+%2
+
+
+contar([], 0).
+
+contar([A|B], C):-
+    contar(B, C1), C is C1+1.
+
+
+ordenar([],P):-
+P is 0.
+
+ordenar([D|E], P):-
+  contar([D|E], C), 2 is C, E>D, P=[E,D].
+
+ordenar([D|E], P):-
+  contar([D|E], C), 2 is C, E<D, P=[D,E].
+
+
+
+ordenar([D|E], P):-
+  contar([D|E], C), not(2 is C), ordenar(E, E1) ,P=[E1,D].
+
+    
+
+
+
+% opcion 2 ejercicio 2
+
+
+contar([], 0).
+
+contar([A|B], C):-
+    contar(B, C1), C is C1+1.
+
+mayor([], S).
+
+mayor([A|B], S):-
+    (  contar([A|B], C), 2 is C, A<B, S is B ) ;
+    (  contar([A|B], C), 2 is C, A>B, S is A ).
+
+
+mayor([A|B], S):-
+   (     contar([A|B], C),not(2 is C), mayor(B, S1), S1>A, S is S1 );    
+   (     contar([A|B], C),not(2 is C), mayor(B, S1), S1<A, S is A ).
+
+
+insert_cab([], B, P):-
+    P= [B|[]].
+
+
+insert_cab([A|[]], B, P):-
+    P= [B|[A]].
+
+insert_cab([A|C], B, P):-
+    P=[B|[A|C]].
+
+
+
+ordenar([],P):-
+P is 0.
+
+ordenar([D|E], P):-
+    (   mayor([D|E], S), D==S, ordenar(E, P1), P=[S|P1] );
+    
+    (   mayor([D|E], S), D=\=S, insert_cab(E, D, E1), ordenar(E1, P1), P=[S|P1] ) .
+    
+    
+    
+%4. Concatenar dos listas
+
+
+% version 1
+
+conc([], [], 0).
+
+conc([], [A|B], [A|B]).
+
+conc([A|B], [], [A|B]).
+
+conc([A|B], [C|D], P):-
+    P=[ [A|B], [C|D]].
+
+
+%version 2 mejorado
+
+
+insert_cola([], B, P):-
+    P=[[],B].
+
+
+insert_cola([A|[]], B, P):-
+    P=[A,B].    
+
+insert_cola([A|C], B, P):-
+    insert_cola(C, B, C1), P=[A|C1].
+
+
+
+
+
+conc([], [], 0).
+
+conc([], [A|B], [A|B]).
+
+conc([A|B], [], [A|B]).
+
+conc([A|B], [C|D], F):-
+    insert_cola([A|B], C, F1), conc(F1, D, F).
+
+
+%llamado
+
+
+conc([4, 5, 6], [1,2,3], F).
+
+
+
+
+% 5) eliminar un elemento de una lista
+% 
+insert_cola([], B, P):-
+    P=[[],B].
+
+
+insert_cola([A|[]], B, P):-
+    P=[A,B].    
+
+insert_cola([A|C], B, P):-
+    insert_cola(C, B, C1), P=[A|C1].
+
+
+conc([], [], 0).
+
+conc([], [A|B], [A|B]).
+
+conc([A|B], [], [A|B]).
+
+conc([A|B], [C|D], F):-
+    insert_cola([A|B], C, F1), conc(F1, D, F).
+
+
+eliminar([],A, V):-
+    V=[].
+
+
+eliminar([A|B],A,V):-
+    V=[B].
+    
+
+eliminar([C|B],A,V):-
+      insert_cola(V,C, P1), eliminar(B, A, V1), conc(P1, V1, V2), V=V2.
+
+
+
+% ------------ otra idea para eliminar un elemento de una lista ------------------
+
+
+
+eliminar(A,[],[]):-
+    write(A), write(' No se encuentra en la lista. Lista vacía').
+
+
+
+eliminar(A,[X|Y], P):-
+    A is X, P= Y.
+
+eliminar(A,[X|Y], P):-
+    not(A is X),member(A,[X|Y]) ,eliminar(A, Y, P1), P is [X|P1].
+
+eliminar(A,[X|Y], P):-
+    not(member(A,[X|Y]) ), write('El número ingresado no se encuentra en la lista'), P is [X|Y].
+    
+    ------------------------------------------------------------------------------------------
+
+%6) predicado que recibe dos listas y determina si son iguales
+
+
+num_ig(H, I, P):-
+    H==I, P is 0.
+    
+
+num_ig(H, I, P):-
+    H=\=I, P is 1.
+
+iguales([],[]).
+
+iguales([A|B], [C|D]):-
+      ( num_ig(A, C, P), Cont = Cont  + P, iguales(B, D), 0 is Cont, write(Cont) ) ;
+    
+      ( num_ig(A, C, P),  Cont = Cont + P, iguales(B, D), not(0 is Cont), write(Cont) ) .
+    
+
+% version 2 de punto 6 mejorado --- funciona
+
+num_ig(H, I, P):-
+    H==I, P is 0.
+    
+
+num_ig(H, I, P):-
+    H=\=I, P is 1.
+
+iguales([],[]).
+
+iguales([A|B], [C|D]):-
+       num_ig(A, C, P), 0 is P, iguales(B, D), write(" Son iguales ").
+
+    
+%7) predicado que recibe una lista y un numero y determina cuantas veces esta
+%el numero en la lista
+
+
+num_ig(H, I, P):-
+    H==I, P is 0.
+    
+
+num_ig(H, I, P):-
+    H=\=I, P is 1.
+
+
+contar([], A, 0).
+
+
+contar([A|C], A, D):-
+    D=1.
+
+contar([B|C], A, D):-
+    (  num_ig(B, A, P), 0 is P, contar(C, A, D1), D = D1 +1 );
+    (  num_ig(B, A, P), not(0 is P), contar(C, A, D) ).    
+
+
+
+ 
+%8.	Construir un predicado que reciba una lista e imprima sólo los números primos***
+%N será el contador 
+% P será 1 si el numero es primo, o 2 si el numero no es primo
+primos(1,2,1).
+primos(2, 2,1).
+primos(3,2,1).
+
+
+primos(A, N, P):-
+   S is sqrt(A), N=<S, 0 is A mod N, P is 2, write(N).
+
+
+primos(A, N, P):-
+   S is sqrt(A), N=<S,nl,  write(N), not(0 is A mod N), P is 1, primos(A,N+1 , P). 
+
+
+
+
+% ------------------- el numero menor de una lista ---------------------
+
+
+menor([],0).
+
+menor([A|X], S):-
+    (A=<X, S is A ); (X=<A, S is X ).
+
+menor([A,X|L], S):-
+    menor([X|L], S1), A=<S1, S is A.
+
+menor([A,X|L], S):-
+    menor([X|L], S1), S1=< A, S is S1.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       
