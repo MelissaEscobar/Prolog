@@ -1,0 +1,235 @@
+:-use_module(library(clpfd)).
+
+lista_positivos([]).
+
+lista_positivos([X|Y]):-
+    X>0, lista_positivos(Y).
+
+
+lista_positivos([X|Y]):-
+    X<0, write('Error. Solo ingresar números positivos'), false.
+
+
+/* pausa  detiene la ejecución del programa hasta que se pulse una tecla */
+pausa :- nl,write('ENTER para continuar...'),
+skip(10).
+
+
+menu:-tty_clear,
+  write('1. Eliminar un elemento de una lista'),nl,
+  write('2. Mostrar numeros perfectos de una lista'),nl,
+  write('3. Ordenar una lista'),nl,
+  write('4. Busqueda binaria'),nl,
+  write('5. Numero que mas se repite en una lista'),nl,
+  write('6. Numero menor de una lista'),nl,
+  write('7. coloreado de mapa'),nl,
+  write('8. Problema de las 8 Reinas'),nl,
+  write('9. Problema de restricciones: las 5 tareas'),nl,
+  write('10. Salir'),nl,
+  write('Digite una opcion'),nl,
+  read(OPCIONES),opciones(OPCIONES).
+
+
+opciones(OPC):-
+  tty_clear,OPC==1,eliminar1,pausa,menu;
+  OPC==2,listaperf1,pausa,menu;
+  OPC==3,listaordenar1,pausa,menu;
+  OPC==4,busqueda,pausa,menu;
+  OPC==5,invertir1,pausa,menu;
+  OPC==6,mayor1,pausa,menu;
+  OPC==7,colores,pausa,menu;
+  OPC==8,tareas,pausa,menu;
+  OPC==10,write("Hasta pronto..."),true.
+
+
+%-----------------------------
+%1) Eliminar elemento de una lista
+
+eliminar1:-
+    write('Ingrese la lista de numeros positivos '),read(LISTA1),nl,
+    lista_positivos(LISTA1) , write('Ingrese el numero a eliminar'), read(Num), eliminar(Num,LISTA1, Y), write(Y).
+
+
+eliminar(A,[],[]):-
+    write(A), write(' No se encuentra en la lista.').
+
+
+eliminar(A,[A|Y], Y).    
+
+eliminar(A,[X|Y], [X|P]):-
+            eliminar(A, Y, P).
+
+
+
+
+
+% ---------------------  -----------------
+% 2) numero perfecto 
+
+divisor(X,Y,Z):-
+    0 is X mod Y, Z is Y.
+
+divisor(X,Y,Z):-
+    not(0 is X mod Y), Z is 0.
+
+perfecto(N):-
+    numeroperfecto(N,1,0).
+
+numeroperfecto(N,N,N).
+
+numeroperfecto(N,C,A):-
+    C < N, C1 is C+1,divisor(N,C,A2), A1 is A+A2, numeroperfecto(N,C1,A1).
+
+lista_perf([X|Y]):-
+    perfecto(X), write(X),nl, lista_perf(Y).
+
+
+
+lista_perf([X|Y]):- 
+    not(perfecto(X)), lista_perf(Y).
+
+num_perfecto:-
+    write('Ingrese la lista de numeros positivos '),read(LISTA2),nl,
+    lista_positivos(LISTA2), write('Los numeros perfectos contenidos en la lista son: '), lista_perf(LISTA2), true.
+    
+
+%---------------------------------------------
+%3) ordenar una lista
+
+ elem(X,[X|L],L).  
+ elem(X,[C|L],[C|LX]) :- 
+    elem(X,L,LX).
+
+% «permutacion(L1,L2)» (L2 es una permutación de L1) 
+
+ permutacion([],[]).  
+ permutacion(L,[C|CL1]) :-
+    elem(C,L,LC),  permutacion(LC,CL1).
+
+
+ menor(X,Y) :- X<Y.  
+ menorig(X,Y) :- X=<Y.
+
+ordenada([]).  
+ordenada([X]).  
+ordenada([X,Y|A]) :- menorig(X,Y),ordenada([Y|A]).
+
+orden_log(A1,A2) :- permutacion(A1,A2),ordenada(A2).
+
+
+orden_log1([C|D]):- orden_log(C,D).
+
+ordenar_lista:-
+    write('Ingrese la lista de numeros positivos '),read(LISTA3),nl,
+     write('La lista ordenada de menor a mayor es: '), orden_log1(LISTA3).
+
+
+%---------------------------------------------
+
+
+% 4) Divide listas (Busqueda Binaria) y busca si esta contenido algun numero
+
+contiene(Lista, Valor):- even_division(_, [Valor|_], Lista).
+contiene(Lista, Valor):- even_division(_, [Centro|SegundaMitad], Lista),
+                        Centro<Valor, SegundaMitad \= [],
+                        contiene(SegundaMitad, Valor).
+
+contiene(Lista, Valor):- even_division(PrimeraMitad, [Centro|_], Lista),
+                         Centro>Valor, PrimeraMitad\=[],
+                         contiene(PrimeraMitad, Valor).
+
+even_division(Primero, Segundo, Aux) :- append(Primero, Segundo, Aux),
+                                    length(Primero,F), length(Segundo,S),
+                                    S>=F, S-F=<1.
+
+busqueda:-
+    write("Ingrese lista"),read(L),nl,
+    write("Ingrese numero a buscar"),read(R),busqueda2(R,L).
+
+busqueda2(R,L):-
+    listaordenar(L,NL),nl,write("El numero "), write(R),
+    contiene(NL,R),!,write(' Si esta en la lista'),nl,skip(10);
+    not(contiene(L,R)),!,write(' No esta en la lista'),nl,skip(10).
+
+
+%---------------------------------------------
+
+% 6) Numero menor de una lista
+
+
+menor([X|Y], S):-
+    menor1(X, Y, S).
+
+menor1(X,[],S ):-
+    S is X.
+
+menor1(A, [B|C], S):-
+    B=< A, !, menor1(B, C, S).
+
+menor1(A, [B|C], S):-
+    B>= A, !, menor1(A, C, S).
+
+% ---------------------------
+%8) Problema de las Reinas
+queens(N,Queens) :- numlist(1,N,XS), find_sol(XS, [], Queens). 
+ 
+find_sol([], Queens, Queens). 
+find_sol(XS, Queens, R) :- 
+    select(Q, XS, YS), notInDiag(Q, Queens, 1), find_sol(YS, [Q|Queens], R). 
+ 
+notInDiag(_, []   , _). 
+notInDiag(Q, [H|T], C) :- abs(Q - H) =\= C, C1 is C + 1, notInDiag(Q, T, C1). 
+ 
+
+% --------------------------------------------------------
+% Ejercicio 9 --- organizar
+
+
+%valor(tarea1, 2). valor en tiempo de las tareas
+%valor(tarea2, 3).
+%valor(tarea3, 2).
+%valor(tarea4, 10).
+%valor(tarea5, 15).
+%
+orden(1).
+orden(2).
+orden(3).
+orden(4).
+orden(5).
+
+%tiempo es la cantidad de segundos que puede tardar una tarea. Máximo 15 en la tarea 5
+
+tiempo(1).
+tiempo(2).
+tiempo(3).
+tiempo(4).
+tiempo(5).
+tiempo(6).
+tiempo(7).
+tiempo(8).
+tiempo(9).
+tiempo(10).
+tiempo(11).
+tiempo(12).
+tiempo(13).
+tiempo(14).
+tiempo(15).
+
+
+ordenar(L):-
+    
+    orden(Tarea1), orden(Tarea2), orden(Tarea3),orden(Tarea4), orden(Tarea5),  
+    Tarea1#< Tarea2, Tarea2#< Tarea3, Tarea3#< Tarea4, Tarea4#< Tarea5, 
+    T1 is 2,tiempo(T2),tiempo(T3),tiempo(T4),T5 is 15,
+    T2#<4, T3#< 3, T4#<11, T4#>4,
+    T1+T2+T3+T4+T5#<31,  
+    write('La tarea 1 va en el puesto: '), write(Tarea1), write(' Y tarda: '), write(T1), write(' segundos'),nl,
+    write('La tarea 2 va en el puesto: '), write(Tarea2), write(' Y tarda: '), write(T2), write(' segundos'),nl,
+    write('La tarea 3 va en el puesto: '), write(Tarea3), write(' Y tarda: '), write(T3), write(' segundos'),nl,
+    write('La tarea 4 va en el puesto: '), write(Tarea4), write(' Y tarda: '), write(T4), write(' segundos'),nl,    
+    write('La tarea 5 va en el puesto: '), write(Tarea5), write(' Y tarda: '), write(T5), write(' segundos'),nl,
+    write('Tiempo total: '), Total is T1+T2+T3+T4+T5, write(Total),nl,
+    L=[Tarea1, Tarea2, Tarea3, Tarea4, Tarea5].
+
+
+
